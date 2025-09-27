@@ -6,6 +6,7 @@ import com.example.notifier.dto.CreateChannelDto;
 import com.example.notifier.dto.CreateVideoDto;
 import com.example.notifier.repository.UserRepository;
 import com.example.notifier.service.api.ChannelService;
+import com.example.notifier.service.api.NotificationService;
 import com.example.notifier.service.api.SubscriptionService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -34,27 +35,32 @@ public class NotifierApplication {
 //            channelService.uploadVideo(channel.id(), new CreateVideoDto("Intro to RxJava", "Basics of RxJava"));
 //        };
 //    }
+//
     @Bean
-    CommandLineRunner subscriptionDemo(SubscriptionService subscriptionService,
-                                       UserRepository userRepository,
-                                       ChannelService channelService) {
+    CommandLineRunner notificationDemo(ChannelService channelService,
+                                       SubscriptionService subscriptionService,
+                                       NotificationService notificationService,
+                                       UserRepository userRepository) {
         return args -> {
-            // 1. Create a user
-            User user = new User();
-            user.setUsername("Alice");
-            user = userRepository.save(user);
+            // Create user
+            User bob = new User();
+            bob.setUsername("Bob");
+            bob = userRepository.save(bob);
 
-            // 2. Create a channel
-            ChannelDto channel = channelService.createChannel(new CreateChannelDto("MusicZone"));
+            // Create channel
+            ChannelDto channel = channelService.createChannel(new CreateChannelDto("CodingWorld"));
 
-            // 3. Subscribe user
-            subscriptionService.subscribe(user.getId(), channel.id());
-            System.out.println("Alice subscribed to MusicZone");
+            // Subscribe user → print notifications
+            notificationService.subscribeUser(bob.getId(), channel.id(),
+                    notif -> System.out.println("NOTIFICATION: " + notif.message()));
 
-            // 4. Unsubscribe user
-            subscriptionService.unsubscribe(user.getId(), channel.id());
-            System.out.println("Alice unsubscribed from MusicZone");
+            // Subscribe in DB
+            subscriptionService.subscribe(bob.getId(), channel.id());
+
+            // Upload video → should trigger notification
+            channelService.uploadVideo(channel.id(), new CreateVideoDto("RxJava Deep Dive", "Advanced concepts"));
         };
     }
+
 
 }

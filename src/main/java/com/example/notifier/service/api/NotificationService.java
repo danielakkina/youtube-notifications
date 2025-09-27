@@ -3,7 +3,7 @@ package com.example.notifier.service.api;
 import com.example.notifier.dto.NotificationDto;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-import java.util.function.Consumer;
+import io.reactivex.rxjava3.functions.Consumer;
 
 public interface NotificationService {
     // Subscribe user to notification stream
