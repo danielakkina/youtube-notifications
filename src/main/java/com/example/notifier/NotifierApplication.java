@@ -36,31 +36,31 @@ public class NotifierApplication {
 //        };
 //    }
 //
-    @Bean
-    CommandLineRunner notificationDemo(ChannelService channelService,
-                                       SubscriptionService subscriptionService,
-                                       NotificationService notificationService,
-                                       UserRepository userRepository) {
-        return args -> {
-            // Create user
-            User bob = new User();
-            bob.setUsername("Bob");
-            bob = userRepository.save(bob);
-
-            // Create channel
-            ChannelDto channel = channelService.createChannel(new CreateChannelDto("CodingWorld"));
-
-            // Subscribe user → print notifications
-            notificationService.subscribeUser(bob.getId(), channel.id(),
-                    notif -> System.out.println("NOTIFICATION: " + notif.message()));
-
-            // Subscribe in DB
-            subscriptionService.subscribe(bob.getId(), channel.id());
-
-            // Upload video → should trigger notification
-            channelService.uploadVideo(channel.id(), new CreateVideoDto("RxJava Deep Dive", "Advanced concepts"));
-        };
-    }
+//    @Bean
+//    CommandLineRunner notificationDemo(ChannelService channelService,
+//                                       SubscriptionService subscriptionService,
+//                                       NotificationService notificationService,
+//                                       UserRepository userRepository) {
+//        return args -> {
+//            // Create user
+//            User bob = new User();
+//            bob.setUsername("Bob");
+//            bob = userRepository.save(bob);
+//
+//            // Create channel
+//            ChannelDto channel = channelService.createChannel(new CreateChannelDto("CodingWorld"));
+//
+//            // Subscribe user → print notifications
+//            notificationService.subscribeUser(bob.getId(), channel.id(),
+//                    notif -> System.out.println("NOTIFICATION: " + notif.message()));
+//
+//            // Subscribe in DB
+//            subscriptionService.subscribe(bob.getId(), channel.id());
+//
+//            // Upload video → should trigger notification
+//            channelService.uploadVideo(channel.id(), new CreateVideoDto("RxJava Deep Dive", "Advanced concepts"));
+//        };
+//    }
 
 
 }
