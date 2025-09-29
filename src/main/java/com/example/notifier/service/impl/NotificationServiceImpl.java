@@ -25,22 +25,4 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationServiceImpl(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
     }
-
-
-    // Helper: build NotificationDto when new video arrives
-    private NotificationDto createNotification(User user, VideoDto video) {
-        String message = "Hey " + user.getUsername()
-                + ", new video uploaded on channel " + video.channelId()
-                + ": " + video.title();
-
-        Notification notification = new Notification();
-        notification.setMessage(message);
-        notification.setCreatedAt(Instant.now());
-        notification.setDelivered(true);
-        notification.setUser(user);
-
-        notificationRepository.save(notification);
-
-        return new NotificationDto(notification.getId(), notification.getMessage(), notification.isDelivered());
-    }
 }
