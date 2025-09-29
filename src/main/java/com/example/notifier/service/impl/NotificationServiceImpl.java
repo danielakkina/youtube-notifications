@@ -20,47 +20,12 @@ import io.reactivex.rxjava3.functions.Consumer;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private final SubscriptionRepository subscriptionRepository;
-    private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
-    private final ChannelEventPublisher eventPublisher;
 
-    public NotificationServiceImpl(SubscriptionRepository subscriptionRepository,
-                                   UserRepository userRepository,
-                                   NotificationRepository notificationRepository,
-                                   ChannelEventPublisher eventPublisher) {
-        this.subscriptionRepository = subscriptionRepository;
-        this.userRepository = userRepository;
+    public NotificationServiceImpl(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
-        this.eventPublisher = eventPublisher;
     }
 
-    @Override
-    public Disposable subscribeUser(Long userId, Long channelId, Consumer<NotificationDto> onNext) {
-        // Verify user exists
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-
-        // Subscribe to channel’s video stream
-        return eventPublisher.getStreamForChannel(channelId)
-                .map(video -> createNotification(user, video)) // convert video → notification
-                .subscribe(onNext);
-    }
-
-
-    @Override
-    public void sendNotification(NotificationDto notificationDto) {
-        Notification notification = new Notification();
-        notification.setMessage(notificationDto.message());
-        notification.setDelivered(notificationDto.delivered());
-        notification.setCreatedAt(Instant.now());
-
-        User user = userRepository.findById(notificationDto.id())
-                .orElseThrow(() -> new IllegalArgumentException("User not found for notification"));
-
-        notification.setUser(user);
-        notificationRepository.save(notification);
-    }
 
     // Helper: build NotificationDto when new video arrives
     private NotificationDto createNotification(User user, VideoDto video) {
