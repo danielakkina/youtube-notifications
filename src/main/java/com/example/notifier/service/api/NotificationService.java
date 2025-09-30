@@ -7,8 +7,6 @@ import io.reactivex.rxjava3.functions.Consumer;
 
 public interface NotificationService {
     // Subscribe user to notification stream
-//    Disposable subscribeUser(Long userId, Long channelId, Consumer<NotificationDto> onNext);
+    Disposable subscribeUser(Long userId, Long channelId, Consumer<NotificationDto> onNext);
 
-    // Notify user explicitly (used internally)
-//    void sendNotification(NotificationDto notificationDto);
 }
